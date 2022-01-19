@@ -95,11 +95,12 @@ module.exports = function(app, passport, db) {
 // user account will stay active in case they want to reconnect in the future
 
     // local -----------------------------------
-    app.get('/unlink/local', isLoggedIn, function(req, res) {
+    app.get('/unlink/local', isLoggedIn, function(req, res, next) {
         var user            = req.user;
         user.local.email    = undefined;
         user.local.password = undefined;
         user.save(function(err) {
+            if (err) return next(err);
             res.redirect('/profile');
         });
     });
