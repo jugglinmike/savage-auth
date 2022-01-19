@@ -8,9 +8,9 @@ module.exports = function(app, passport, db) {
     });
 
     // PROFILE SECTION =========================
-    app.get('/profile', isLoggedIn, function(req, res) {
+    app.get('/profile', isLoggedIn, function(req, res, next) {
         db.collection('messages').find().toArray((err, result) => {
-          if (err) return console.log(err)
+          if (err) return next(err)
           res.render('profile.ejs', {
             user : req.user,
             messages: result
@@ -26,15 +26,15 @@ module.exports = function(app, passport, db) {
 
 // message board routes ===============================================================
 
-    app.post('/messages', (req, res) => {
+    app.post('/messages', (req, res, next) => {
       db.collection('messages').save({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
-        if (err) return console.log(err)
+        if (err) return next(err)
         console.log('saved to database')
         res.redirect('/profile')
       })
     })
 
-    app.put('/messages', (req, res) => {
+    app.put('/messages', (req, res, next) => {
       db.collection('messages')
       .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
         $set: {
@@ -44,14 +44,14 @@ module.exports = function(app, passport, db) {
         sort: {_id: -1},
         upsert: true
       }, (err, result) => {
-        if (err) return res.send(err)
+        if (err) return next(err)
         res.send(result)
       })
     })
 
-    app.delete('/messages', (req, res) => {
+    app.delete('/messages', (req, res, next) => {
       db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
-        if (err) return res.send(500, err)
+        if (err) return next(500, err)
         res.send('Message deleted!')
       })
     })
