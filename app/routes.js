@@ -37,7 +37,7 @@ module.exports = function(app, passport) {
     })
 
     app.put('/messages', (req, res) => {
-      Message.findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+      Message.updateOne({name: req.body.name, msg: req.body.msg}, {
         $set: {
           thumbUp:req.body.thumbUp + 1
         }
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
     })
 
     app.delete('/messages', (req, res) => {
-      Message.findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
+      Message.deleteOne({name: req.body.name, msg: req.body.msg}, (err, result) => {
         if (err) return res.send(500, err)
         res.send('Message deleted!')
       })
