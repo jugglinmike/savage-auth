@@ -51,7 +51,7 @@ module.exports = function(app, passport, db) {
 
     app.delete('/messages', (req, res, next) => {
       db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
-        if (err) return next(500, err)
+        if (err) return next(err)
         res.send('Message deleted!')
       })
     })
